@@ -1,6 +1,4 @@
-﻿using APBD09.Models;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+﻿using APBD09.Models.DTOs;
 
 namespace APBD09.Repositories;
 
@@ -19,42 +17,36 @@ public class TripRepository: ITripRepository
         _configuration = configuration;
     }
 
-    public async Task<List<Trip>> getTrip(int page = 1, int pageSize = 10)
+    public PagedResultDto<TripDto> getTrip(int page, int pageSize)
     {
-        var totalTrips = await _context.Trips.CountAsync();
-        var totalPages = (int)System.Math.Ceiling(totalTrips / (double)pageSize);
-        List<Trip> tripsList = new();
+        if (page < 1) page = 1;
+        if (pageSize < 1) pageSize = 10;
 
-        var trips = await _context.Trips
-            .Include(t => t.Name)
+        var totalTrips = _context.Trips.Count();
+
+        var trips = _context.Trips
             .OrderByDescending(t => t.DateFrom)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .ToListAsync(tripsList);
-
-        var result = new
-        {
-            pageNum = page,
-            pageSize = pageSize,
-            allPages = totalPages,
-            trips = trips.Select(t => new
+            .Select(t => new TripDto
             {
-                t.Name,
-                t.Description,
-                DateFrom = t.DateFrom.ToString("yyyy-MM-dd"),
-                DateTo = t.DateTo.ToString("yyyy-MM-dd"),
-                t.MaxPeople,
-                Countries = t.CountryTrips.Select(ct => new { ct.Country.Name }),
-                Clients = t.ClientTrips.Select(ct => new { ct.Client.FirstName, ct.Client.LastName })
+                Name = t.Name,
+                Description = t.Description,
+                DateFrom = t.DateFrom,
+                DateTo = t.DateTo,
+                MaxPeople = t.MaxPeople,
             })
+            .ToList();
+
+        var totalPages = (int)Math.Ceiling((double)totalTrips / pageSize);
+
+        return new PagedResultDto<TripDto>
+        {
+            PageNum = page,
+            PageSize = pageSize,
+            AllPages = totalPages,
+            Items = trips
         };
-
-        return Ok(result);
-    }
-
-    public async Task deleteClient()
-    {
-        
     }
 
     public async Task postClientToTrip()

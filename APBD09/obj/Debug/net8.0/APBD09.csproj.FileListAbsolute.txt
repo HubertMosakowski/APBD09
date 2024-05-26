@@ -152,3 +152,4 @@ C:\Users\Hubert Mosakowski\RiderProjects\APBD09\APBD09\bin\Debug\net8.0\System.N
 C:\Users\Hubert Mosakowski\RiderProjects\APBD09\APBD09\bin\Debug\net8.0\System.Web.Http.dll
 C:\Users\Hubert Mosakowski\RiderProjects\APBD09\APBD09\bin\Debug\net8.0\Newtonsoft.Json.dll
 C:\Users\Hubert Mosakowski\RiderProjects\APBD09\APBD09\bin\Debug\net8.0\Newtonsoft.Json.Bson.dll
+C:\Users\Hubert Mosakowski\RiderProjects\APBD09\APBD09\obj\Debug\net8.0\APBD09.sourcelink.json
